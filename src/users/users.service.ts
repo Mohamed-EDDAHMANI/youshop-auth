@@ -6,6 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { TokenService } from '../auth/token.service';
 import { User } from './entities/user.entity';
 import { PrismaService } from '../prisma/prisma.service';
+import { Role } from '../../generated/prisma';
 
 @Injectable()
 export class UsersService {
@@ -22,16 +23,23 @@ export class UsersService {
         const passwordHash = await bcrypt.hash(dto.password, 10);
         const refreshToken = this.tokenService.generateRefreshToken({ sub: dto.email });
 
+        // Convert dto.role (UserRole) to Prisma Role
+        const prismaRole = dto.role as Role;
+
         // Save user with passwordHash and refreshToken
         const user = await this.prisma.user.create({
-            ...dto,
-            passwordHash,
-            refreshToken,
+            data: {
+                email: dto.email,
+                fullName: dto.fullName,
+                passwordHash,
+                role: prismaRole,
+                refreshToken,
+            },
         });
 
         const accessToken = this.tokenService.generateAccessToken({ sub: user.id, email: user.email });
         return {
-            user: { id: user.id, email: user.email, name: user.name },
+            user: { id: user.id, email: user.email, name: user.fullName },
             accessToken,
             refreshToken,
         };

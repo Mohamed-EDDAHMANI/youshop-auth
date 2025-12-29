@@ -11,7 +11,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // Enums
@@ -26,6 +25,7 @@ enum Role {
 model User {
   id            String   @id @default(uuid())
   email         String   @unique
+  fullName  String
   passwordHash  String
   role          Role     @default(CLIENT)
   createdAt     DateTime @default(now())
