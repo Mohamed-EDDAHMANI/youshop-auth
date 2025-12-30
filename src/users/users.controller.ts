@@ -15,7 +15,8 @@ export class UsersController {
 
     @MessagePattern('auth/login')
     async login(data: { body: LoginDto }) {
-        return this.usersService.login(data.body);
+        return 'from auth service';
+        // return this.usersService.login(data.body);
     }
 
     @MessagePattern('auth/refresh')

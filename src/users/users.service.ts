@@ -5,8 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { TokenService } from '../auth/token.service';
 import { User } from './entities/user.entity';
-import { PrismaService } from '../prisma/prisma.service';
 import { Role } from '../../generated/prisma';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
@@ -25,6 +25,7 @@ export class UsersService {
 
         // Convert dto.role (UserRole) to Prisma Role
         const prismaRole = dto.role as Role;
+        // console.log('prismaRole:  '+ prismaRole);
 
         // Save user with passwordHash and refreshToken
         const user = await this.prisma.user.create({
@@ -32,13 +33,14 @@ export class UsersService {
                 email: dto.email,
                 fullName: dto.fullName,
                 passwordHash,
-                role: prismaRole,
+                role: dto.role as Role,
                 refreshToken,
             },
         });
 
         const accessToken = this.tokenService.generateAccessToken({ sub: user.id, email: user.email });
         return {
+            success: true,
             user: { id: user.id, email: user.email, name: user.fullName },
             accessToken,
             refreshToken,
@@ -55,7 +57,8 @@ export class UsersService {
 
         const accessToken = this.tokenService.generateAccessToken({ sub: user.id, email: user.email });
         return {
-            user: { id: user.id, email: user.email, name: user.name },
+            success: true,
+            user: { id: user.id, email: user.email, name: user.fullName },
             accessToken,
             refreshToken: user.refreshToken,
         };
