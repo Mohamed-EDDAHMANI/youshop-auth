@@ -35,7 +35,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       instances: [
         { id: instanceId, host, port }
       ],
-      endpoints: AUTH_ENDPOINTS
+      endpoints: AUTH_ENDPOINTS.map(e => ({
+        pattern: e.pattern.source,
+        roles: e.roles,
+      }))
     };
     await this.redis.set(`serviceKey:${routeKey}`, JSON.stringify(serviceInfo));
     this.logger.log(`Registered all service info: serviceKey:${routeKey}`);

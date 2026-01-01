@@ -8,7 +8,8 @@ import { AppService } from './app.service';
 import { RedisService } from './services/redis.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersController } from './users/users.controller';
-import { UsersService } from './users/users.service';
+import { WinstonModule } from 'nest-winston';
+import { winstonConfig } from './common/logger/logger.config';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UsersService } from './users/users.service';
     UsersModule,
     AuthModule,
     PrismaModule,
+    WinstonModule.forRoot(winstonConfig),
   ],
   controllers: [AppController, UsersController],
   providers: [

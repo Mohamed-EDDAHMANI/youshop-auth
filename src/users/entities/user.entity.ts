@@ -6,5 +6,4 @@ export class User {
   role: 'ADMIN' | 'CLIENT';
   createdAt: Date;
   refreshToken?: string;
-  name?: string;
 }
